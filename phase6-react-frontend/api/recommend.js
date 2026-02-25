@@ -159,19 +159,39 @@ ${context}
             return;
         }
 
-        const ai = new GoogleGenAI({ apiKey });
-        const response = await ai.models.generateContent({
-            model: "gemini-2.0-flash",
-            contents: prompt,
-            config: {
-                systemInstruction: systemInstruction,
-                temperature: 0.3,
+        let recommendationText = "";
+        try {
+            const ai = new GoogleGenAI({ apiKey });
+            const response = await ai.models.generateContent({
+                model: "gemini-2.0-flash", // We keep 2.0-flash, but it will safely throw if quota 0
+                contents: prompt,
+                config: {
+                    systemInstruction: systemInstruction,
+                    temperature: 0.3,
+                }
+            });
+            recommendationText = response.text;
+        } catch (llmErr) {
+            console.warn("LLM Generation failed (likely Quota/Rate Limit). Falling back to procedural generation.", llmErr.message);
+            if (retrievedRestaurants.length === 0) {
+                recommendationText = "No recommendations returned. Try relaxing filters.";
+            } else {
+                recommendationText = "⚠️ **API Limit Reached:** Showing procedural fallback results:\n\n";
+                recommendationText += "| Restaurant Name | Address | Rating (Reviews) | Cost for Two |\n";
+                recommendationText += "| --- | --- | --- | --- |\n";
+                retrievedRestaurants.forEach(r => {
+                    const cost = r.price_for_two || "N/A";
+                    const rating = r.rate || "N/A";
+                    const reviews = r.raw_metadata?.votes || 0;
+                    const address = r.raw_metadata?.address || "N/A";
+                    recommendationText += `| **${r.name}** | ${address} | **${rating}** (${reviews}) | ₹${cost} |\n`;
+                });
             }
-        });
+        }
 
         res.status(200).json({
             success: true,
-            recommendation: response.text,
+            recommendation: recommendationText,
             context_used: retrievedRestaurants.map(r => r.name)
         });
 
