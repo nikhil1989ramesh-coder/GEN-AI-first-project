@@ -1,5 +1,9 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default async function handler(req, res) {
     if (req.method === 'OPTIONS') {
@@ -7,7 +11,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const dataPath = path.join(process.cwd(), 'api', 'data.json');
+        const dataPath = path.join(__dirname, 'data.json');
         const fileContent = await fs.readFile(dataPath, 'utf-8');
         const data = JSON.parse(fileContent);
 

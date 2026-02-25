@@ -56,7 +56,7 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: "Please provide at least a 'place' or 'cuisine' to get a recommendation." });
         }
 
-        const dataPath = path.join(process.cwd(), 'api', 'data.json');
+        const dataPath = path.join(__dirname, 'data.json');
         const fileContent = await fs.readFile(dataPath, 'utf-8');
         const data = JSON.parse(fileContent);
 
