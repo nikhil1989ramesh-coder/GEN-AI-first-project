@@ -1,0 +1,12 @@
+{
+    "name": "phase2-vector-db",
+    "version": "1.0.0",
+    "description": "Zomato Restaurant Recommendation Phase 2 - Pinecone Storage and Embeddings",
+    "main": "src/db.js",
+    "type": "module",
+    "scripts": {
+        "test": "node --test"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+}

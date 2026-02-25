@@ -1,0 +1,14 @@
+{
+    "name": "phase3-llm-integration",
+    "version": "1.0.0",
+    "description": "Zomato Restaurant Recommendation Phase 3 - Gemini 3.1 Pro RAG Integration",
+    "main": "src/llm.js",
+    "type": "module",
+    "scripts": {
+        "test": "node --test"
+    },
+    "dependencies": {
+        "@google/genai": "latest"
+    },
+    "devDependencies": {}
+}
