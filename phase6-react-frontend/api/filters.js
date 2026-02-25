@@ -25,15 +25,14 @@ export default async function handler(req, res) {
                 placesSet.add(mainLocation);
             }
             if (item.cuisines) {
-                if (typeof item.cuisines === 'string') {
+                if (Array.isArray(item.cuisines)) {
+                    item.cuisines.forEach(c => cuisinesSet.add(c.trim()));
+                } else if (typeof item.cuisines === 'string') {
                     item.cuisines.split(',').forEach(c => cuisinesSet.add(c.trim()));
                 }
             }
-            if (item['approx_cost(for two people)']) {
-                const cost = parseInt(item['approx_cost(for two people)'].toString().replace(/,/g, ''));
-                if (!isNaN(cost)) {
-                    pricesSet.add(cost);
-                }
+            if (item.price_for_two) {
+                pricesSet.add(Number(item.price_for_two));
             }
         });
 

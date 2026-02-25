@@ -1,6 +1,10 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function generateEmbeddings(text) {
     let seed = 0;
@@ -28,15 +32,15 @@ function assembleContext(restaurants) {
 
     let contextString = "### Retrieved Zomato Dataset Results:\n\n";
     restaurants.forEach((rest, index) => {
-        const cost = rest['approx_cost(for two people)'] ? rest['approx_cost(for two people)'].toString().replace(/,/g, '') : "N/A";
+        const cost = rest.price_for_two || "N/A";
         contextString += `**Option ${index + 1}: ${rest.name}**\n`;
         contextString += `- Location: ${rest.location}\n`;
-        contextString += `- Full Address: ${rest.address || "N/A"}\n`;
-        contextString += `- Cuisines: ${rest.cuisines}\n`;
-        contextString += `- Rating: ${rest.rate} / 5 (based on ${rest.votes || 0} reviews)\n`;
-        contextString += `- Type: ${rest.rest_type || "N/A"}\n`;
+        contextString += `- Full Address: ${rest.raw_metadata?.address || "N/A"}\n`;
+        contextString += `- Cuisines: ${Array.isArray(rest.cuisines) ? rest.cuisines.join(', ') : rest.cuisines}\n`;
+        contextString += `- Rating: ${rest.rate} / 5 (based on ${rest.raw_metadata?.votes || 0} reviews)\n`;
+        contextString += `- Type: ${rest.raw_metadata?.rest_type || "N/A"}\n`;
         contextString += `- Cost for Two: ₹${cost}\n`;
-        contextString += `- Overview: The restaurant ${rest.name} is located in ${rest.location}. It specializes in ${rest.cuisines} cuisines. It has a rating of ${rest.rate}/5.0 based on ${rest.votes || 0} votes. The approximate cost for two people is Rs. ${cost}. Known for its great vibe, it offers ${rest.rest_type || 'various dining options'}.\n\n`;
+        contextString += `- Overview: The restaurant ${rest.name} is located in ${rest.location}. It specializes in ${Array.isArray(rest.cuisines) ? rest.cuisines.join(', ') : rest.cuisines} cuisines. It has a rating of ${rest.rate}/5.0 based on ${rest.raw_metadata?.votes || 0} votes. The approximate cost for two people is Rs. ${cost}. Known for its great vibe, it offers ${rest.raw_metadata?.rest_type || 'various dining options'}.\n\n`;
     });
     return contextString;
 }
@@ -74,8 +78,8 @@ export default async function handler(req, res) {
             let match = true;
             if (min_rating && record.rate && record.rate < parseFloat(min_rating)) match = false;
 
-            if (record['approx_cost(for two people)']) {
-                const cost = parseInt(record['approx_cost(for two people)'].toString().replace(/,/g, ''));
+            if (record.price_for_two) {
+                const cost = Number(record.price_for_two);
                 if (maxP && cost > maxP) match = false;
                 if (minP && cost <= minP) match = false;
             }
@@ -97,7 +101,8 @@ export default async function handler(req, res) {
         const queryVector = await generateEmbeddings(queryText);
 
         const candidatesPromises = filtered.slice(0, 50).map(async (record) => {
-            const desc = `The restaurant ${record.name} is located in ${record.location}. It specializes in ${record.cuisines} cuisines.`;
+            const cStr = Array.isArray(record.cuisines) ? record.cuisines.join(', ') : record.cuisines;
+            const desc = `The restaurant ${record.name} is located in ${record.location}. It specializes in ${cStr} cuisines.`;
             const v = await generateEmbeddings(desc);
             return { ...record, score: cosineSimilarityMock(queryVector, v) };
         });
