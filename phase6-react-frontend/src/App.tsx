@@ -141,7 +141,7 @@ export default function App() {
   const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/v1/filters")
+    fetch("/api/filters")
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -168,7 +168,7 @@ export default function App() {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/api/v1/recommend", {
+      const res = await fetch("/api/recommend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(preferences),
