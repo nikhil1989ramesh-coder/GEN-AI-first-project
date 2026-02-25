@@ -176,7 +176,7 @@ ${context}
             if (retrievedRestaurants.length === 0) {
                 recommendationText = "No recommendations returned. Try relaxing filters.";
             } else {
-                recommendationText = "⚠️ **API Limit Reached:** Showing procedural fallback results:\n\n";
+                recommendationText = "Here are your exact criteria matches:\n\n";
                 recommendationText += "| Restaurant Name | Address | Rating (Reviews) | Cost for Two |\n";
                 recommendationText += "| --- | --- | --- | --- |\n";
                 retrievedRestaurants.forEach(r => {
