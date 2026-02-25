@@ -177,6 +177,6 @@ ${context}
 
     } catch (err) {
         console.error("API Error in /recommend:", err);
-        res.status(500).json({ error: "Internal Server Error", details: err.message });
+        res.status(500).json({ error: `Vercel Backend Crash: ${err.message || 'Unknown Server Error'}` });
     }
 }
