@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Analytics } from "@vercel/analytics/react";
 import "./index.css";
 
 // Custom Dropdown Component
@@ -380,6 +381,7 @@ export default function App() {
         )}
 
       </div>
+      <Analytics />
     </main>
   );
 }
