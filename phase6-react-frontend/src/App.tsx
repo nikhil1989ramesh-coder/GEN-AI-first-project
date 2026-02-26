@@ -197,32 +197,44 @@ export default function App() {
   const exportToPDF = async () => {
     if (!resultsRef.current) return;
     setIsExporting(true);
-    try {
-      const canvas = await html2canvas(resultsRef.current, { scale: 2, useCORS: true, backgroundColor: isDarkMode ? '#000000' : '#ffffff' });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      let heightLeft = pdfHeight;
-      let position = 0;
+    // Safety timeout to ensure React Markdown has fully injected the DOM elements into the Swiggy cards
+    setTimeout(async () => {
+      try {
+        const canvas = await html2canvas(resultsRef.current as HTMLElement, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: isDarkMode ? '#000000' : '#ffffff',
+          logging: false
+        });
 
-      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-      heightLeft -= pdf.internal.pageSize.getHeight();
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      while (heightLeft >= 0) {
-        position = heightLeft - pdfHeight;
-        pdf.addPage();
+        let heightLeft = pdfHeight;
+        let position = 0;
+
         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
         heightLeft -= pdf.internal.pageSize.getHeight();
-      }
 
-      pdf.save('DineGenie-Recommendations.pdf');
-    } catch (err) {
-      console.error("PDF Export failed", err);
-    } finally {
-      setIsExporting(false);
-    }
+        while (heightLeft > 0) {
+          position = heightLeft - pdfHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+          heightLeft -= pdf.internal.pageSize.getHeight();
+        }
+
+        pdf.save('DineGenie-Recommendations.pdf');
+      } catch (err) {
+        console.error("PDF Export failed", err);
+        setError("Failed to generate PDF. Please try again.");
+      } finally {
+        setIsExporting(false);
+      }
+    }, 500);
   };
 
   const placeOptions = filters.places.map(p => ({ label: p, value: p }));
