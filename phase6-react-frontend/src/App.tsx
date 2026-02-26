@@ -263,9 +263,10 @@ export default function App() {
           <h1 className={`text-5xl sm:text-7xl font-bold tracking-tighter ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}>
             DineGenie <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">AI</span>
           </h1>
-          <p className={`text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed ${isDarkMode ? 'text-neutral-400' : 'text-neutral-500'}`}>
-            Discover your next dining experience in Bangalore. Tell us what you're craving, and our AI will handpick the ideal dining destinations in Bangalore based on your unique tastes.
-          </p>
+          <div className={`text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed ${isDarkMode ? 'text-neutral-400' : 'text-neutral-500'}`}>
+            <p className={`font-bold pb-1 ${isDarkMode ? 'text-white' : 'text-neutral-900'}`}>Your next great meal in Bangalore starts here.</p>
+            <p className="text-base sm:text-lg">Share your craving, and our AI delivers personalized restaurant picks in seconds.</p>
+          </div>
           <div className={`flex justify-center items-center space-x-6 text-sm font-medium pt-3 ${isDarkMode ? 'text-neutral-500' : 'text-neutral-400'}`}>
             <span className={`flex items-center space-x-2 border px-3 py-1.5 rounded-lg ${isDarkMode ? 'bg-[#0a0a0a] border-neutral-800' : 'bg-white border-neutral-200'}`}>
               <span className="text-lg">📍</span><span className={isDarkMode ? 'text-red-100' : 'text-red-600'}>{loadingFilters ? '...' : filters.places.length} Localities</span>
