@@ -216,7 +216,7 @@ export default function App() {
             </span>
           </div>
           <h1 className="text-5xl sm:text-7xl font-bold tracking-tighter text-white">
-            Zomato <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">Gen-AI</span>
+            DineGenie <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-400">AI</span>
           </h1>
           <p className="text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
             Discover your next dining experience. Tell us what you're craving, and our AI will handpick the ideal dining destinations based on your unique tastes.
