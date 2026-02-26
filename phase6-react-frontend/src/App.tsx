@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Analytics } from "@vercel/analytics/react";
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import "./index.css";
 
 function CustomDropdown({ value, onChange, options, placeholder, disabled, isDarkMode = true }: { value: string, onChange: (val: string) => void, options: any[], placeholder: string, disabled?: boolean, isDarkMode?: boolean }) {
@@ -140,7 +138,6 @@ export default function App() {
   const [recommendation, setRecommendation] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [isExporting, setIsExporting] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -192,48 +189,6 @@ export default function App() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const exportToPDF = async () => {
-    if (!resultsRef.current) return;
-    setIsExporting(true);
-
-    // Safety timeout to ensure React Markdown has fully injected the DOM elements into the Swiggy cards
-    setTimeout(async () => {
-      try {
-        const canvas = await html2canvas(resultsRef.current as HTMLElement, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: isDarkMode ? '#000000' : '#ffffff',
-          logging: false
-        });
-
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-        let heightLeft = pdfHeight;
-        let position = 0;
-
-        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-        heightLeft -= pdf.internal.pageSize.getHeight();
-
-        while (heightLeft > 0) {
-          position = heightLeft - pdfHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-          heightLeft -= pdf.internal.pageSize.getHeight();
-        }
-
-        pdf.save('DineGenie-Recommendations.pdf');
-      } catch (err) {
-        console.error("PDF Export failed", err);
-        setError("Failed to generate PDF. Please try again.");
-      } finally {
-        setIsExporting(false);
-      }
-    }, 500);
   };
 
   const placeOptions = filters.places.map(p => ({ label: p, value: p }));
@@ -402,26 +357,6 @@ export default function App() {
                 <span>🍽️</span>
                 <span className={`text-transparent bg-clip-text bg-gradient-to-r ${isDarkMode ? 'from-red-200 to-rose-200' : 'from-red-600 to-rose-600'}`}>Your Curated Itinerary</span>
               </h2>
-              <button
-                onClick={exportToPDF}
-                disabled={isExporting}
-                className={`px-6 py-2 rounded-xl text-sm font-bold flex items-center space-x-2 transition-all ${isDarkMode ? 'bg-neutral-800 hover:bg-neutral-700 text-white' : 'bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-200 shadow-sm'}`}
-              >
-                {isExporting ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Exporting...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>📄</span>
-                    <span>Save to PDF</span>
-                  </>
-                )}
-              </button>
             </div>
 
             <div className={`w-full overflow-x-auto transition-all duration-300 p-6 sm:p-10 rounded-3xl border ${isDarkMode ? 'bg-[#0a0a0a]/80 border-neutral-800/50' : 'bg-white border-neutral-200 shadow-lg'}`}>
