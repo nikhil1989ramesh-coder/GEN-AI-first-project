@@ -204,7 +204,6 @@ export default function App() {
         const canvas = await html2canvas(resultsRef.current as HTMLElement, {
           scale: 2,
           useCORS: true,
-          allowTaint: true,
           backgroundColor: isDarkMode ? '#000000' : '#ffffff',
           logging: false
         });
