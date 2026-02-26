@@ -435,9 +435,9 @@ export default function App() {
                 
                 [&_tr]:flex [&_tr]:flex-col [&_tr]:bg-white [&_tr]:rounded-2xl [&_tr]:overflow-hidden [&_tr]:shadow-[0_8px_24px_rgba(0,0,0,0.5)] [&_tr]:transition-all hover:[&_tr]:shadow-[0_12px_32px_rgba(0,0,0,0.8)] hover:[&_tr]:-translate-y-1 [&_tr]:relative [&_tr]:border [&_tr]:border-neutral-800
 
-                /* Top Image & Overlay Area */
+                /* Top Image & Overlay Area Styled with Pure CSS to Bypass CORS PDF Errors */
                 [&_td]:block [&_td]:border-0 [&_td]:px-4 [&_td]:py-1 [&_td]:text-left
-                [&_td:nth-child(1)]:relative [&_td:nth-child(1)]:h-48 [&_td:nth-child(1)]:w-full [&_td:nth-child(1)]:px-4 [&_td:nth-child(1)]:pt-32 [&_td:nth-child(1)]:pb-4 [&_td:nth-child(1)]:bg-cover [&_td:nth-child(1)]:bg-center [&_td:nth-child(1)]:bg-[url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop')] [&_td:nth-child(1)]:before:absolute [&_td:nth-child(1)]:before:inset-0 [&_td:nth-child(1)]:before:bg-gradient-to-t [&_td:nth-child(1)]:before:from-black/90 [&_td:nth-child(1)]:before:to-transparent [&_td:nth-child(1)]:before:content-['']
+                [&_td:nth-child(1)]:relative [&_td:nth-child(1)]:h-48 [&_td:nth-child(1)]:w-full [&_td:nth-child(1)]:px-4 [&_td:nth-child(1)]:pt-32 [&_td:nth-child(1)]:pb-4 [&_td:nth-child(1)]:bg-gradient-to-tr [&_td:nth-child(1)]:from-[#991b1b] [&_td:nth-child(1)]:via-[#7f1d1d] [&_td:nth-child(1)]:to-[#450a0a] [&_td:nth-child(1)]:before:absolute [&_td:nth-child(1)]:before:inset-0 [&_td:nth-child(1)]:before:bg-gradient-to-t [&_td:nth-child(1)]:before:from-black/90 [&_td:nth-child(1)]:before:to-transparent [&_td:nth-child(1)]:before:content-['']
                 [&_td:nth-child(1)]:!text-2xl [&_td:nth-child(1)]:!font-extrabold [&_td:nth-child(1)]:!text-white [&_td:nth-child(1)_*]:!text-white [&_td:nth-child(1)_*]:relative [&_td:nth-child(1)_*]:z-10 [&_td:nth-child(1)]:leading-tight [&_td:nth-child(1)]:tracking-tight [&_td:nth-child(1)]:drop-shadow-md
 
                 /* Info Context Body */
